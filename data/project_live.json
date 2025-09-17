@@ -1,0 +1,4 @@
+{"message": "I just saw a movie! It was boring.", "author": "Bob", "timestamp": "2025-09-17 17:36:23", "category": "entertainment", "sentiment": 0.94, "keyword_mentioned": "movie", "message_length": 34}
+{"message": "I just saw travel! It was amazing.", "author": "Charlie", "timestamp": "2025-09-17 17:36:28", "category": "travel", "sentiment": 0.91, "keyword_mentioned": "travel", "message_length": 34}
+{"message": "I just found recipe! It was exciting.", "author": "Alice", "timestamp": "2025-09-17 17:36:33", "category": "food", "sentiment": 0.45, "keyword_mentioned": "recipe", "message_length": 37}
+{"message": "I just loved game! It was boring.", "author": "Bob", "timestamp": "2025-09-17 17:36:38", "category": "gaming", "sentiment": 0.53, "keyword_mentioned": "game", "message_length": 33}

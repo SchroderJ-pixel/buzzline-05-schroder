@@ -122,21 +122,19 @@ def consume_messages_from_kafka(
         logger.error(f"ERROR: Could not create Kafka consumer: {e}")
         sys.exit(11)
 
+### Edited Step 3)
     logger.info("Step 3. Verify topic exists.")
     if consumer is not None:
         try:
-            is_topic_available(topic)
+            if not is_topic_available(topic):
+                raise RuntimeError(
+                f"Topic '{topic}' not found. Start the producer or create the topic."
+            )
             logger.info(f"Kafka topic '{topic}' is ready.")
         except Exception as e:
             logger.error(
-                f"ERROR: Topic '{topic}' does not exist. Please run the Kafka producer. : {e}"
-            )
-            sys.exit(13)
-
-    logger.info("Step 4. Process messages.")
-
-    if consumer is None:
-        logger.error("ERROR: Consumer is None. Exiting.")
+            f"ERROR: Topic '{topic}' does not exist. Please run the Kafka producer. : {e}"
+        )
         sys.exit(13)
 
     try:

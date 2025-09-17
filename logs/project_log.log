@@ -2,3 +2,25 @@
 2025-09-17 17:28:16 | INFO | Log sanitization enabled, personal info removed
 2025-09-17 17:28:55 | INFO | Logging to file: logs/project_log.log
 2025-09-17 17:28:55 | INFO | Log sanitization enabled, personal info removed
+2025-09-17 17:36:21 | INFO | Logging to file: logs/project_log.log
+2025-09-17 17:36:21 | INFO | Log sanitization enabled, personal info removed
+2025-09-17 17:36:21 | INFO | Starting Producer to run continuously.
+2025-09-17 17:36:21 | INFO | Use Ctrl+C to stop.
+2025-09-17 17:36:21 | INFO | MESSAGE_INTERVAL_SECONDS: 5
+2025-09-17 17:36:21 | INFO | BUZZ_TOPIC: buzzline
+2025-09-17 17:36:21 | INFO | KAFKA_BROKER_ADDRESS: 127.0.0.1:9092
+2025-09-17 17:36:21 | INFO | BASE_DATA_DIR: ~/OneDrive/Desktop/Masters/Streaming Data/Mod 5/buzzline-05-schroder/data
+2025-09-17 17:36:21 | INFO | LIVE_DATA_PATH: ~/OneDrive/Desktop/Masters/Streaming Data/Mod 5/buzzline-05-schroder/data/project_live.json
+2025-09-17 17:36:21 | INFO | BASE_DATA_DIR: ~/OneDrive/Desktop/Masters/Streaming Data/Mod 5/buzzline-05-schroder/data
+2025-09-17 17:36:21 | INFO | SQLITE_PATH: ~/OneDrive/Desktop/Masters/Streaming Data/Mod 5/buzzline-05-schroder/data/buzz.sqlite
+2025-09-17 17:36:21 | INFO | Kafka broker address: localhost:9092
+2025-09-17 17:36:21 | INFO | Kafka is ready. Brokers: {'throttle_time_ms': 0, 'brokers': [{'node_id': 1, 'host': 'localhost', 'port': 9092, 'rack': None}], 'cluster_id': 'HegFEN9JRCi4V5qcsYuThQ', 'controller_id': 1}
+2025-09-17 17:36:23 | WARNING | WARNING: Kafka setup failed: NoBrokersAvailable
+2025-09-17 17:36:23 | INFO | {'message': 'I just saw a movie! It was boring.', 'author': 'Bob', 'timestamp': '2025-09-17 17:36:23', 'category': 'entertainment', 'sentiment': 0.94, 'keyword_mentioned': 'movie', 'message_length': 34}
+2025-09-17 17:36:28 | INFO | {'message': 'I just saw travel! It was amazing.', 'author': 'Charlie', 'timestamp': '2025-09-17 17:36:28', 'category': 'travel', 'sentiment': 0.91, 'keyword_mentioned': 'travel', 'message_length': 34}
+2025-09-17 17:36:33 | INFO | {'message': 'I just found recipe! It was exciting.', 'author': 'Alice', 'timestamp': '2025-09-17 17:36:33', 'category': 'food', 'sentiment': 0.45, 'keyword_mentioned': 'recipe', 'message_length': 37}
+2025-09-17 17:36:38 | INFO | {'message': 'I just loved game! It was boring.', 'author': 'Bob', 'timestamp': '2025-09-17 17:36:38', 'category': 'gaming', 'sentiment': 0.53, 'keyword_mentioned': 'game', 'message_length': 33}
+2025-09-17 17:36:39 | INFO | Logging to file: logs/project_log.log
+2025-09-17 17:36:39 | INFO | Log sanitization enabled, personal info removed
+2025-09-17 17:36:42 | WARNING | Producer interrupted by user.
+2025-09-17 17:36:42 | INFO | Producer shutting down.

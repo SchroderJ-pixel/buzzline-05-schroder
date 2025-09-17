@@ -221,6 +221,48 @@ def clear_kafka_topic(topic_name: str, group_id: Optional[str] = None):
 
 
 #####################################
+# Added is_topic_available
+#####################################
+def is_topic_available(topic: str, timeout_ms: int = 5000) -> bool:
+    """
+    Return True if `topic` exists on the Kafka cluster defined by KAFKA_BROKER_ADDRESS.
+    Uses KafkaAdminClient.list_topics().
+
+    Args:
+        topic: Topic name to check.
+        timeout_ms: Admin client request timeout (ms).
+
+    Returns:
+        bool: True if topic exists, False otherwise.
+    """
+    try:
+        kafka_broker = get_kafka_broker_address()
+        admin = KafkaAdminClient(
+            bootstrap_servers=kafka_broker,
+            client_id="topic_check",
+            request_timeout_ms=timeout_ms,
+        )
+        try:
+            topics = set(admin.list_topics())
+        finally:
+            try:
+                admin.close()
+            except Exception:
+                pass
+
+        exists = topic in topics
+        if exists:
+            logger.info(f"is_topic_available: topic '{topic}' found on {kafka_broker}.")
+        else:
+            logger.warning(f"is_topic_available: topic '{topic}' NOT found on {kafka_broker}.")
+        return exists
+
+    except Exception as e:
+        logger.error(f"is_topic_available: failed to check topic '{topic}': {e}")
+        return False
+
+
+#####################################
 # Main Function for Testing
 #####################################
 
