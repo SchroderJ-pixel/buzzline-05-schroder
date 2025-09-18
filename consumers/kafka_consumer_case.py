@@ -1,8 +1,8 @@
 """
 kafka_consumer_case.py
 
-Consume json messages from a live data file. 
-Insert the processed messages into a database.
+Consume JSON messages from a Kafka topic and insert the processed
+messages into a SQLite database.
 
 Example JSON message
 {
@@ -15,69 +15,94 @@ Example JSON message
     "message_length": 42
 }
 
-Database functions are in consumers/db_sqlite_case.py.
-Environment variables are in utils/utils_config module. 
+Database functions live in consumers/sqlite_consumer_case.py.
+Environment variables are read via utils/utils_config.
 """
 
 #####################################
-# Import Modules
+# Imports
 #####################################
 
-# import from standard library
+# Standard library
 import json
 import os
 import pathlib
 import sys
+import time
+from typing import Dict, Optional
 
-# import external modules
+# External
 from kafka import KafkaConsumer
 
-# import from local modules
+# Local utilities
 import utils.utils_config as config
 from utils.utils_consumer import create_kafka_consumer
 from utils.utils_logger import logger
 from utils.utils_producer import verify_services, is_topic_available
 
-# Ensure the parent directory is in sys.path
+# Make sure parent directory is importable (for consumers.* imports)
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from consumers.sqlite_consumer_case import init_db, insert_message
+from consumers.sqlite_consumer_case import init_db, insert_message  # noqa: E402
+
 
 #####################################
-# Function to process a single message
-# #####################################
+# Message Processing
+#####################################
+
+REQUIRED_FIELDS = [
+    "message",
+    "author",
+    "timestamp",
+    "category",
+    "sentiment",
+    "keyword_mentioned",
+    "message_length",
+]
 
 
-def process_message(message: dict) -> None:
+def process_message(msg: Dict) -> Optional[Dict]:
     """
-    Process and transform a single JSON message.
-    Converts message fields to appropriate data types.
+    Validate / normalize an incoming message dict.
 
-    Args:
-        message (dict): The JSON message as a Python dictionary.
+    Returns:
+        - dict ready for insert_message()
+        - None to skip invalid records
     """
-    logger.info("Called process_message() with:")
-    logger.info(f"   {message=}")
-    try:
-        processed_message = {
-            "message": message.get("message"),
-            "author": message.get("author"),
-            "timestamp": message.get("timestamp"),
-            "category": message.get("category"),
-            "sentiment": float(message.get("sentiment", 0.0)),
-            "keyword_mentioned": message.get("keyword_mentioned"),
-            "message_length": int(message.get("message_length", 0)),
-        }
-        logger.info(f"Processed message: {processed_message}")
-        return processed_message
-    except Exception as e:
-        logger.error(f"Error processing message: {e}")
+    if not isinstance(msg, dict):
+        logger.warning(f"Skipping non-dict message: {msg!r}")
         return None
 
+    # Ensure required fields exist
+    for key in REQUIRED_FIELDS:
+        if key not in msg:
+            logger.warning(f"Skipping message missing '{key}': {msg}")
+            return None
+
+    # Light normalization / type safety (best-effort, non-fatal)
+    try:
+        # Ensure sentiment is a float
+        if not isinstance(msg["sentiment"], (int, float)):
+            msg["sentiment"] = float(msg["sentiment"])
+
+        # Ensure message_length is an int
+        if not isinstance(msg["message_length"], int):
+            msg["message_length"] = int(msg["message_length"])
+
+        # Coerce simple string fields
+        for s in ["message", "author", "category", "keyword_mentioned", "timestamp"]:
+            if not isinstance(msg[s], str):
+                msg[s] = str(msg[s])
+
+    except Exception as e:
+        logger.warning(f"Normalization issue, skipping message {msg}: {e}")
+        return None
+
+    return msg
+
 
 #####################################
-# Consume Messages from Kafka Topic
+# Core Consumer Loop
 #####################################
-
 
 def consume_messages_from_kafka(
     topic: str,
@@ -87,23 +112,17 @@ def consume_messages_from_kafka(
     interval_secs: int,
 ):
     """
-    Consume new messages from Kafka topic and process them.
+    Consume new messages from a Kafka topic and process them.
     Each message is expected to be JSON-formatted.
-
-    Args:
-    - topic (str): Kafka topic to consume messages from.
-    - kafka_url (str): Kafka broker address.
-    - group (str): Consumer group ID for Kafka.
-    - sql_path (pathlib.Path): Path to the SQLite database file.
-    - interval_secs (int): Interval between reads from the file.
     """
     logger.info("Called consume_messages_from_kafka() with:")
-    logger.info(f"   {topic=}")
-    logger.info(f"   {kafka_url=}")
-    logger.info(f"   {group=}")
-    logger.info(f"   {sql_path=}")
-    logger.info(f"   {interval_secs=}")
+    logger.info(f"   topic={topic}")
+    logger.info(f"   kafka_url={kafka_url}")
+    logger.info(f"   group={group}")
+    logger.info(f"   sql_path={sql_path}")
+    logger.info(f"   interval_secs={interval_secs}")
 
+    # Step 1. Verify Kafka services.
     logger.info("Step 1. Verify Kafka Services.")
     try:
         verify_services()
@@ -111,50 +130,87 @@ def consume_messages_from_kafka(
         logger.error(f"ERROR: Kafka services verification failed: {e}")
         sys.exit(11)
 
+    # Step 2. Create a Kafka consumer.
     logger.info("Step 2. Create a Kafka consumer.")
+    consumer = None
     try:
-        consumer: KafkaConsumer = create_kafka_consumer(
+        consumer = create_kafka_consumer(
             topic,
             group,
             value_deserializer_provided=lambda x: json.loads(x.decode("utf-8")),
         )
+        logger.info("Kafka consumer created successfully.")
     except Exception as e:
         logger.error(f"ERROR: Could not create Kafka consumer: {e}")
-        sys.exit(11)
+        sys.exit(12)
 
-### Edited Step 3)
+    # Step 3. Verify topic exists.
     logger.info("Step 3. Verify topic exists.")
-    if consumer is not None:
-        try:
-            if not is_topic_available(topic):
-                raise RuntimeError(
+    try:
+        if not is_topic_available(topic):
+            raise RuntimeError(
                 f"Topic '{topic}' not found. Start the producer or create the topic."
             )
-            logger.info(f"Kafka topic '{topic}' is ready.")
-        except Exception as e:
-            logger.error(
+        logger.info(f"Kafka topic '{topic}' is ready.")
+    except Exception as e:
+        logger.error(
             f"ERROR: Topic '{topic}' does not exist. Please run the Kafka producer. : {e}"
         )
+        if consumer:
+            try:
+                consumer.close()
+            except Exception:
+                pass
         sys.exit(13)
 
-    try:
-        # consumer is a KafkaConsumer
-        # message is a kafka.consumer.fetcher.ConsumerRecord
-        # message.value is a Python dictionary
-        for message in consumer:
-            processed_message = process_message(message.value)
-            if processed_message:
-                insert_message(processed_message, sql_path)
+    # Step 4. Process messages (block and poll)
+    logger.info("Step 4. Process messages.")
+    if consumer is None:
+        logger.error("ERROR: Consumer is None. Exiting.")
+        sys.exit(14)
 
+    try:
+        while True:
+            # Poll returns {TopicPartition: [ConsumerRecord, ...]}
+            records = consumer.poll(timeout_ms=1000)
+
+            if not records:
+                # Small nap to keep loop gentle
+                time.sleep(0.1)
+                continue
+
+            for tp, msgs in records.items():
+                for msg in msgs:
+                    try:
+                        processed = process_message(msg.value)
+                        if processed:
+                            insert_message(processed, sql_path)
+                    except Exception as inner_e:
+                        logger.error(f"Error handling message on {tp}: {inner_e}")
+
+            # If manual commits are desired, uncomment:
+            # consumer.commit()
+
+            # Optional pacing between polls (uses your env setting)
+            if interval_secs and interval_secs > 0:
+                time.sleep(min(interval_secs, 1))  # don’t stall too long in consumer loop
+
+    except KeyboardInterrupt:
+        logger.warning("Consumer interrupted by user.")
     except Exception as e:
         logger.error(f"ERROR: Could not consume messages from Kafka: {e}")
         raise
+    finally:
+        try:
+            consumer.close()
+            logger.info("Kafka consumer closed.")
+        except Exception:
+            pass
 
 
 #####################################
-# Define Main Function
+# Main
 #####################################
-
 
 def main():
     """
@@ -174,11 +230,14 @@ def main():
         interval_secs: int = config.get_message_interval_seconds_as_int()
         sqlite_path: pathlib.Path = config.get_sqlite_path()
         logger.info("SUCCESS: Read environment variables.")
+        logger.info(f"ENV: topic={topic}, kafka_url={kafka_url}, group_id={group_id}")
+        logger.info(f"ENV: sqlite_path={sqlite_path}, interval_secs={interval_secs}")
     except Exception as e:
         logger.error(f"ERROR: Failed to read environment variables: {e}")
         sys.exit(1)
 
     logger.info("STEP 2. Delete any prior database file for a fresh start.")
+    # NOTE: Comment this block if you want to append instead of wiping each run.
     if sqlite_path.exists():
         try:
             sqlite_path.unlink()
@@ -197,7 +256,11 @@ def main():
     logger.info("STEP 4. Begin consuming and storing messages.")
     try:
         consume_messages_from_kafka(
-            topic, kafka_url, group_id, sqlite_path, interval_secs
+            topic=topic,
+            kafka_url=kafka_url,
+            group=group_id,
+            sql_path=sqlite_path,
+            interval_secs=interval_secs,
         )
     except KeyboardInterrupt:
         logger.warning("Consumer interrupted by user.")
@@ -208,7 +271,7 @@ def main():
 
 
 #####################################
-# Conditional Execution
+# Entrypoint
 #####################################
 
 if __name__ == "__main__":

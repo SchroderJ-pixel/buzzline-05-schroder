@@ -70,6 +70,8 @@ def create_kafka_consumer(
     )
     logger.debug(f"Kafka broker: {kafka_broker}")
 
+
+### Edited
     try:
         consumer = KafkaConsumer(
             topic,
@@ -81,9 +83,11 @@ def create_kafka_consumer(
             request_timeout_ms=30000,
             session_timeout_ms=15000,
             heartbeat_interval_ms=3000,
+            consumer_timeout_ms=None,  # 👈 keep the consumer running until interrupted
         )
         logger.info("Kafka consumer created successfully.")
         return consumer
     except Exception as e:
         logger.error(f"Error creating Kafka consumer: {e}")
         raise
+

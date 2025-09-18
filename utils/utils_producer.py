@@ -36,12 +36,18 @@ DEFAULT_KAFKA_BROKER_ADDRESS = "localhost:9092"
 # Helper Functions
 #####################################
 
-
+### Edited
 def get_kafka_broker_address():
-    """Fetch Kafka broker address from environment or use default."""
-    broker_address = os.getenv("KAFKA_BROKER_ADDRESS", "localhost:9092")
+    # Prefer the same source your consumer uses
+    try:
+        import utils.utils_config as config
+        broker_address = config.get_kafka_broker_address()
+    except Exception:
+        import os
+        broker_address = os.getenv("KAFKA_BROKER_ADDRESS", "127.0.0.1:9092")
     logger.info(f"Kafka broker address: {broker_address}")
     return broker_address
+
 
 
 #####################################
