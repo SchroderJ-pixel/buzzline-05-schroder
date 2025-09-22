@@ -1,4 +1,0 @@
-{"message": "I just saw an app! It was funny.", "author": "Eve", "timestamp": "2025-09-18 17:42:13", "category": "other", "sentiment": 0.45, "keyword_mentioned": "other", "message_length": 32}
-{"message": "I just found recipe! It was funny.", "author": "Alice", "timestamp": "2025-09-18 17:42:18", "category": "food", "sentiment": 0.3, "keyword_mentioned": "recipe", "message_length": 34}
-{"message": "I just tried travel! It was amazing.", "author": "Bob", "timestamp": "2025-09-18 17:42:23", "category": "travel", "sentiment": 0.05, "keyword_mentioned": "travel", "message_length": 36}
-{"message": "I just loved JavaScript! It was amazing.", "author": "Charlie", "timestamp": "2025-09-18 17:42:28", "category": "tech", "sentiment": 0.79, "keyword_mentioned": "JavaScript", "message_length": 40}

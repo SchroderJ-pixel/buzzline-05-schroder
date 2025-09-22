@@ -1,0 +1,37 @@
+2025-09-22 16:56:30 | INFO | Logging to file: logs/project_log_20556.log
+2025-09-22 16:56:30 | INFO | Log sanitization enabled, personal info removed
+2025-09-22 16:56:30 | INFO | Starting Producer to run continuously.
+2025-09-22 16:56:30 | INFO | Use Ctrl+C to stop.
+2025-09-22 16:56:30 | INFO | MESSAGE_INTERVAL_SECONDS: 5
+2025-09-22 16:56:30 | INFO | BUZZ_TOPIC: buzzline_v2_schroder
+2025-09-22 16:56:30 | INFO | KAFKA_BROKER_ADDRESS: 172.21.223.52:9092
+2025-09-22 16:56:30 | INFO | BASE_DATA_DIR: ~/OneDrive/Desktop/Masters/Streaming Data/Mod 5/buzzline-05-schroder/data
+2025-09-22 16:56:30 | INFO | LIVE_DATA_PATH: ~/OneDrive/Desktop/Masters/Streaming Data/Mod 5/buzzline-05-schroder/data/project_live.json
+2025-09-22 16:56:30 | INFO | BASE_DATA_DIR: ~/OneDrive/Desktop/Masters/Streaming Data/Mod 5/buzzline-05-schroder/data
+2025-09-22 16:56:30 | INFO | SQLITE_PATH: ~/OneDrive/Desktop/Masters/Streaming Data/Mod 5/buzzline-05-schroder/data/buzz.sqlite
+2025-09-22 16:56:30 | INFO | Deleted existing live data file.
+2025-09-22 16:56:30 | INFO | KAFKA_BROKER_ADDRESS: 172.21.223.52:9092
+2025-09-22 16:56:30 | INFO | Kafka broker address: 172.21.223.52:9092
+2025-09-22 16:56:30 | INFO | Kafka is ready. Brokers: {'throttle_time_ms': 0, 'brokers': [{'node_id': 0, 'host': 'localhost', 'port': 9092, 'rack': None}], 'cluster_id': 'lv5ErvvfRuyQMq3KKWuGJA', 'controller_id': 0}
+2025-09-22 16:56:30 | INFO | Kafka producer connected to 172.21.223.52:9092
+2025-09-22 16:56:30 | INFO | KAFKA_BROKER_ADDRESS: 172.21.223.52:9092
+2025-09-22 16:56:30 | INFO | Kafka broker address: 172.21.223.52:9092
+2025-09-22 16:56:30 | INFO | Topic 'buzzline_v2_schroder' created successfully.
+2025-09-22 16:56:30 | INFO | Kafka topic 'buzzline_v2_schroder' is ready.
+2025-09-22 16:56:30 | INFO | {'message': 'I just found an app! It was funny.', 'author': 'Alice', 'timestamp': '2025-09-22 16:56:30', 'category': 'other', 'sentiment': 0.92, 'keyword_mentioned': 'other', 'message_length': 34}
+2025-09-22 16:56:35 | INFO | {'message': 'I just tried game! It was boring.', 'author': 'Bob', 'timestamp': '2025-09-22 16:56:35', 'category': 'gaming', 'sentiment': 0.86, 'keyword_mentioned': 'game', 'message_length': 33}
+2025-09-22 16:56:40 | INFO | {'message': 'I just shared travel! It was exciting.', 'author': 'Eve', 'timestamp': '2025-09-22 16:56:40', 'category': 'travel', 'sentiment': 0.61, 'keyword_mentioned': 'travel', 'message_length': 38}
+2025-09-22 16:56:45 | INFO | {'message': 'I just found an app! It was weird.', 'author': 'Bob', 'timestamp': '2025-09-22 16:56:45', 'category': 'other', 'sentiment': 0.8, 'keyword_mentioned': 'other', 'message_length': 34}
+2025-09-22 16:56:50 | INFO | {'message': 'I just saw travel! It was amazing.', 'author': 'Bob', 'timestamp': '2025-09-22 16:56:50', 'category': 'travel', 'sentiment': 0.47, 'keyword_mentioned': 'travel', 'message_length': 34}
+2025-09-22 16:56:55 | INFO | {'message': 'I just tried an app! It was funny.', 'author': 'Bob', 'timestamp': '2025-09-22 16:56:55', 'category': 'other', 'sentiment': 0.4, 'keyword_mentioned': 'other', 'message_length': 34}
+2025-09-22 16:57:00 | INFO | {'message': 'I just saw game! It was boring.', 'author': 'Alice', 'timestamp': '2025-09-22 16:57:00', 'category': 'gaming', 'sentiment': 0.36, 'keyword_mentioned': 'game', 'message_length': 31}
+2025-09-22 16:57:05 | INFO | {'message': 'I just loved travel! It was weird.', 'author': 'Eve', 'timestamp': '2025-09-22 16:57:05', 'category': 'travel', 'sentiment': 0.73, 'keyword_mentioned': 'travel', 'message_length': 34}
+2025-09-22 16:57:10 | INFO | {'message': 'I just tried recipe! It was weird.', 'author': 'Bob', 'timestamp': '2025-09-22 16:57:10', 'category': 'food', 'sentiment': 0.3, 'keyword_mentioned': 'recipe', 'message_length': 34}
+2025-09-22 16:57:15 | INFO | {'message': 'I just loved a story! It was exciting.', 'author': 'Alice', 'timestamp': '2025-09-22 16:57:15', 'category': 'other', 'sentiment': 0.33, 'keyword_mentioned': 'other', 'message_length': 38}
+2025-09-22 16:57:20 | INFO | {'message': 'I just tried a meme! It was weird.', 'author': 'Alice', 'timestamp': '2025-09-22 16:57:20', 'category': 'humor', 'sentiment': 0.58, 'keyword_mentioned': 'meme', 'message_length': 34}
+2025-09-22 16:57:25 | INFO | {'message': 'I just loved JavaScript! It was weird.', 'author': 'Charlie', 'timestamp': '2025-09-22 16:57:25', 'category': 'tech', 'sentiment': 0.4, 'keyword_mentioned': 'JavaScript', 'message_length': 38}
+2025-09-22 16:57:30 | INFO | {'message': 'I just saw a trick! It was funny.', 'author': 'Bob', 'timestamp': '2025-09-22 16:57:30', 'category': 'other', 'sentiment': 0.72, 'keyword_mentioned': 'other', 'message_length': 33}
+2025-09-22 16:57:35 | INFO | {'message': 'I just tried a movie! It was amazing.', 'author': 'Charlie', 'timestamp': '2025-09-22 16:57:35', 'category': 'entertainment', 'sentiment': 0.42, 'keyword_mentioned': 'movie', 'message_length': 37}
+2025-09-22 16:57:35 | WARNING | Producer interrupted by user.
+2025-09-22 16:57:35 | INFO | Kafka producer closed.
+2025-09-22 16:57:35 | INFO | Producer shutting down.

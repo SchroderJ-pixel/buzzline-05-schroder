@@ -2,79 +2,66 @@
 Logger Setup Script
 File: utils/utils_logger.py
 
-This script provides logging functions for the project.
-Logging is an essential way to track events and issues during execution.
-
-Features:
-- Logs information, warnings, and errors to a designated log file.
-- Ensures the log directory exists.
-- Sanitizes logs to remove personal/identifying information for GitHub sharing.
+- Logs to a unique file per process (avoids Windows/OneDrive file-lock/rotation issues)
+- Ensures the log directory exists
+- Sanitizes log messages to strip personal paths/usernames
 """
 
 #####################################
-# Import Modules
+# Imports
 #####################################
-
-# Imports from Python Standard Library
-import pathlib
-import getpass
+import os
 import sys
+import getpass
+import pathlib
 from typing import Mapping, Any
-
-# Imports from external packages
 from loguru import logger
 
 #####################################
-# Default Configurations
+# Constants / Paths
 #####################################
-
-# Get this file name without the extension
 CURRENT_SCRIPT = pathlib.Path(__file__).stem
-
-# Set directory where logs will be stored
 LOG_FOLDER: pathlib.Path = pathlib.Path("logs")
+# Unique file per process using PID (stable on Windows)
+LOG_FILE: pathlib.Path = LOG_FOLDER / f"project_log_{os.getpid()}.log"
 
-# Set the name of the log file
-LOG_FILE: pathlib.Path = LOG_FOLDER.joinpath("project_log.log")
+# Ensure the log folder exists early
+try:
+    LOG_FOLDER.mkdir(parents=True, exist_ok=True)
+    print(f"Log folder ready at: {LOG_FOLDER}")
+except Exception as e:
+    print(f"Error creating log folder: {e}", file=sys.stderr)
 
 #####################################
-# Helper Functions
+# Helper Functions (must be defined before logger.add)
 #####################################
-
-
 def sanitize_message(record: Mapping[str, Any]) -> str:
     """Remove personal/identifying information from log messages and escape braces."""
     message = record["message"]
 
-    # Replace username with generic placeholder
+    # Replace username with placeholder
     try:
-        current_user = getpass.getuser()
-        message = message.replace(current_user, "USER")
+        message = message.replace(getpass.getuser(), "USER")
     except Exception:
         pass
 
-    # Replace home directory paths
+    # Replace home directory
     try:
-        home_path = str(pathlib.Path.home())
-        message = message.replace(home_path, "~")
+        message = message.replace(str(pathlib.Path.home()), "~")
     except Exception:
         pass
 
-    # Replace absolute paths with relative ones
+    # Replace absolute CWD with PROJECT_ROOT
     try:
-        cwd = str(pathlib.Path.cwd())
-        message = message.replace(cwd, "PROJECT_ROOT")
+        message = message.replace(str(pathlib.Path.cwd()), "PROJECT_ROOT")
     except Exception:
         pass
 
-    # Replace Windows backslashes with forward slashes for consistency
+    # Normalize slashes for readability
     message = message.replace("\\", "/")
 
-    # IMPORTANT: Escape braces so Loguru's string formatter won't treat them as fields
-    # This preserves your original "{time} | {level} | {message}" format safely.
+    # Escape braces so Loguru doesn't treat them as formatting fields
     message = message.replace("{", "{{").replace("}", "}}")
-
-    # Return the sanitized message without modifying the record
     return message
 
 
@@ -85,43 +72,55 @@ def format_sanitized(record: Mapping[str, Any]) -> str:
     level_name = record["level"].name
     return f"{time_str} | {level_name} | {message}\n"
 
-
-try:
-    LOG_FOLDER.mkdir(exist_ok=True)
-    print(f"Log folder ready at: {LOG_FOLDER}")
-except Exception as e:
-    print(f"Error creating log folder: {e}")
-
+#####################################
+# Logger Configuration
+#####################################
 try:
     logger.remove()
+
+    # File sink: per-process file, rotation disabled to avoid rename races
     logger.add(
         LOG_FILE,
         level="INFO",
-        rotation="50 kB",  # Small files
-        retention=1,  # Keep last rotated file
-        compression=None,  # No compression needed
-        enqueue=True,  # safer across threads/processes
+        rotation=None,      # no rotation (prevents WinError 32 on OneDrive)
+        retention=None,
+        compression=None,
+        enqueue=True,       # safe across threads/processes
+        backtrace=False,
+        diagnose=False,
         format=format_sanitized,
     )
+
+    # Console sink
     logger.add(
         sys.stderr,
         level="INFO",
         enqueue=True,
+        backtrace=False,
+        diagnose=False,
         format=format_sanitized,
     )
+
     logger.info(f"Logging to file: {LOG_FILE}")
     logger.info("Log sanitization enabled, personal info removed")
 except Exception as e:
-    logger.error(f"Error configuring logger to write to file: {e}")
+    # Minimal fallback to console if file sink fails
+    try:
+        logger.add(sys.stderr, level="INFO")
+    except Exception:
+        pass
+    print(f"Error configuring logger to write to file: {e}", file=sys.stderr)
 
-
+#####################################
+# Public Helpers
+#####################################
 def get_log_file_path() -> pathlib.Path:
-    """Return the path to the log file."""
+    """Return the concrete log file path (PID-based)."""
     return LOG_FILE
 
 
 def log_example() -> None:
-    """Example logging function to demonstrate logging behavior."""
+    """Example logging to demonstrate behavior."""
     try:
         logger.info("This is an example info message.")
         logger.info(f"Current working directory: {pathlib.Path.cwd()}")
@@ -131,26 +130,14 @@ def log_example() -> None:
     except Exception as e:
         logger.error(f"An error occurred during logging: {e}")
 
-
 #####################################
-# Main Function for Testing
+# CLI Test
 #####################################
-
-
 def main() -> None:
-    """Main function to execute logger setup and demonstrate its usage."""
     logger.info(f"STARTING {CURRENT_SCRIPT}.py")
-
-    # Call the example logging function
     log_example()
-
-    logger.info(f"View the log output at {LOG_FILE}")
+    logger.info(f"View the log output in: {LOG_FILE}")
     logger.info(f"EXITING {CURRENT_SCRIPT}.py.")
-
-
-#####################################
-# Conditional Execution
-#####################################
 
 if __name__ == "__main__":
     main()

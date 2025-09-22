@@ -1,0 +1,22 @@
+2025-09-22 17:08:18 | INFO | Logging to file: logs/project_log_20140.log
+2025-09-22 17:08:18 | INFO | Log sanitization enabled, personal info removed
+2025-09-22 17:08:18 | INFO | Starting consumer_schroder (Fitness)
+2025-09-22 17:08:18 | INFO | BUZZ_TOPIC: buzzline_v2_schroder
+2025-09-22 17:08:18 | INFO | BUZZ_CONSUMER_GROUP_ID: buzz_group
+2025-09-22 17:08:18 | INFO | BASE_DATA_DIR: ~/OneDrive/Desktop/Masters/Streaming Data/Mod 5/buzzline-05-schroder/data
+2025-09-22 17:08:18 | INFO | SQLITE_PATH: ~/OneDrive/Desktop/Masters/Streaming Data/Mod 5/buzzline-05-schroder/data/buzz.sqlite
+2025-09-22 17:08:18 | INFO | MESSAGE_INTERVAL_SECONDS: 5
+2025-09-22 17:08:18 | INFO | Verify Kafka services…
+2025-09-22 17:08:18 | INFO | KAFKA_BROKER_ADDRESS: 172.21.223.52:9092
+2025-09-22 17:08:18 | INFO | Kafka broker address: 172.21.223.52:9092
+2025-09-22 17:08:18 | INFO | Kafka is ready. Brokers: {'throttle_time_ms': 0, 'brokers': [{'node_id': 0, 'host': 'localhost', 'port': 9092, 'rack': None}], 'cluster_id': 'lv5ErvvfRuyQMq3KKWuGJA', 'controller_id': 0}
+2025-09-22 17:08:18 | INFO | Kafka check complete.
+2025-09-22 17:08:18 | INFO | Ensure topic 'buzzline_v2_schroder' exists…
+2025-09-22 17:08:18 | INFO | KAFKA_BROKER_ADDRESS: 172.21.223.52:9092
+2025-09-22 17:08:18 | INFO | Kafka broker address: 172.21.223.52:9092
+2025-09-22 17:08:18 | INFO | is_topic_available: topic 'buzzline_v2_schroder' found on 172.21.223.52:9092.
+2025-09-22 17:08:18 | INFO | KAFKA_BROKER_ADDRESS: 172.21.223.52:9092
+2025-09-22 17:08:18 | INFO | Kafka broker address: 172.21.223.52:9092
+2025-09-22 17:08:18 | INFO | Creating Kafka consumer. Topic='buzzline_v2_schroder' and group ID='buzz_group'.
+2025-09-22 17:08:18 | INFO | Kafka consumer created successfully.
+2025-09-22 17:08:18 | INFO | Begin polling… Ctrl+C to stop.
