@@ -1,0 +1,11 @@
+{"message": "I just tried JavaScript! It was boring.", "author": "Eve", "timestamp": "2025-09-22 17:23:48", "category": "tech", "sentiment": 0.36, "keyword_mentioned": "JavaScript", "message_length": 39}
+{"message": "I just shared JavaScript! It was amazing.", "author": "Bob", "timestamp": "2025-09-22 17:23:53", "category": "tech", "sentiment": 0.23, "keyword_mentioned": "JavaScript", "message_length": 41}
+{"message": "I just tried travel! It was funny.", "author": "Bob", "timestamp": "2025-09-22 17:23:58", "category": "travel", "sentiment": 0.4, "keyword_mentioned": "travel", "message_length": 34}
+{"message": "I just shared game! It was boring.", "author": "Alice", "timestamp": "2025-09-22 17:24:03", "category": "gaming", "sentiment": 0.39, "keyword_mentioned": "game", "message_length": 34}
+{"message": "I just loved a meme! It was funny.", "author": "Eve", "timestamp": "2025-09-22 17:24:08", "category": "humor", "sentiment": 0.01, "keyword_mentioned": "meme", "message_length": 34}
+{"message": "I just shared JavaScript! It was exciting.", "author": "Bob", "timestamp": "2025-09-22 17:24:13", "category": "tech", "sentiment": 0.38, "keyword_mentioned": "JavaScript", "message_length": 42}
+{"message": "I just tried a story! It was boring.", "author": "Charlie", "timestamp": "2025-09-22 17:24:18", "category": "other", "sentiment": 0.39, "keyword_mentioned": "other", "message_length": 36}
+{"message": "I just tried a movie! It was weird.", "author": "Charlie", "timestamp": "2025-09-22 17:24:23", "category": "entertainment", "sentiment": 0.78, "keyword_mentioned": "movie", "message_length": 35}
+{"message": "I just found Python! It was weird.", "author": "Eve", "timestamp": "2025-09-22 17:24:28", "category": "tech", "sentiment": 0.81, "keyword_mentioned": "Python", "message_length": 34}
+{"message": "I just saw a trick! It was exciting.", "author": "Alice", "timestamp": "2025-09-22 17:24:33", "category": "other", "sentiment": 0.25, "keyword_mentioned": "other", "message_length": 36}
+{"message": "I just loved a movie! It was funny.", "author": "Alice", "timestamp": "2025-09-22 17:24:38", "category": "entertainment", "sentiment": 0.01, "keyword_mentioned": "movie", "message_length": 35}

@@ -1,0 +1,33 @@
+2025-09-22 17:23:48 | INFO | Logging to file: logs/project_log_20164.log
+2025-09-22 17:23:48 | INFO | Log sanitization enabled, personal info removed
+2025-09-22 17:23:48 | INFO | Starting Producer to run continuously.
+2025-09-22 17:23:48 | INFO | Use Ctrl+C to stop.
+2025-09-22 17:23:48 | INFO | MESSAGE_INTERVAL_SECONDS: 5
+2025-09-22 17:23:48 | INFO | BUZZ_TOPIC: buzzline_v2_schroder
+2025-09-22 17:23:48 | INFO | KAFKA_BROKER_ADDRESS: 172.21.223.52:9092
+2025-09-22 17:23:48 | INFO | BASE_DATA_DIR: ~/OneDrive/Desktop/Masters/Streaming Data/Mod 5/buzzline-05-schroder/data
+2025-09-22 17:23:48 | INFO | LIVE_DATA_PATH: ~/OneDrive/Desktop/Masters/Streaming Data/Mod 5/buzzline-05-schroder/data/project_live.json
+2025-09-22 17:23:48 | INFO | BASE_DATA_DIR: ~/OneDrive/Desktop/Masters/Streaming Data/Mod 5/buzzline-05-schroder/data
+2025-09-22 17:23:48 | INFO | SQLITE_PATH: ~/OneDrive/Desktop/Masters/Streaming Data/Mod 5/buzzline-05-schroder/data/buzz.sqlite
+2025-09-22 17:23:48 | INFO | KAFKA_BROKER_ADDRESS: 172.21.223.52:9092
+2025-09-22 17:23:48 | INFO | Kafka broker address: 172.21.223.52:9092
+2025-09-22 17:23:48 | INFO | Kafka is ready. Brokers: {'throttle_time_ms': 0, 'brokers': [{'node_id': 0, 'host': 'localhost', 'port': 9092, 'rack': None}], 'cluster_id': 'lv5ErvvfRuyQMq3KKWuGJA', 'controller_id': 0}
+2025-09-22 17:23:48 | INFO | Kafka producer connected to 172.21.223.52:9092
+2025-09-22 17:23:48 | INFO | KAFKA_BROKER_ADDRESS: 172.21.223.52:9092
+2025-09-22 17:23:48 | INFO | Kafka broker address: 172.21.223.52:9092
+2025-09-22 17:23:48 | INFO | Kafka topic 'buzzline_v2_schroder' is ready (exists).
+2025-09-22 17:23:48 | INFO | Kafka topic 'buzzline_v2_schroder' is ready.
+2025-09-22 17:23:48 | INFO | {'message': 'I just tried JavaScript! It was boring.', 'author': 'Eve', 'timestamp': '2025-09-22 17:23:48', 'category': 'tech', 'sentiment': 0.36, 'keyword_mentioned': 'JavaScript', 'message_length': 39}
+2025-09-22 17:23:53 | INFO | {'message': 'I just shared JavaScript! It was amazing.', 'author': 'Bob', 'timestamp': '2025-09-22 17:23:53', 'category': 'tech', 'sentiment': 0.23, 'keyword_mentioned': 'JavaScript', 'message_length': 41}
+2025-09-22 17:23:58 | INFO | {'message': 'I just tried travel! It was funny.', 'author': 'Bob', 'timestamp': '2025-09-22 17:23:58', 'category': 'travel', 'sentiment': 0.4, 'keyword_mentioned': 'travel', 'message_length': 34}
+2025-09-22 17:24:03 | INFO | {'message': 'I just shared game! It was boring.', 'author': 'Alice', 'timestamp': '2025-09-22 17:24:03', 'category': 'gaming', 'sentiment': 0.39, 'keyword_mentioned': 'game', 'message_length': 34}
+2025-09-22 17:24:08 | INFO | {'message': 'I just loved a meme! It was funny.', 'author': 'Eve', 'timestamp': '2025-09-22 17:24:08', 'category': 'humor', 'sentiment': 0.01, 'keyword_mentioned': 'meme', 'message_length': 34}
+2025-09-22 17:24:13 | INFO | {'message': 'I just shared JavaScript! It was exciting.', 'author': 'Bob', 'timestamp': '2025-09-22 17:24:13', 'category': 'tech', 'sentiment': 0.38, 'keyword_mentioned': 'JavaScript', 'message_length': 42}
+2025-09-22 17:24:18 | INFO | {'message': 'I just tried a story! It was boring.', 'author': 'Charlie', 'timestamp': '2025-09-22 17:24:18', 'category': 'other', 'sentiment': 0.39, 'keyword_mentioned': 'other', 'message_length': 36}
+2025-09-22 17:24:23 | INFO | {'message': 'I just tried a movie! It was weird.', 'author': 'Charlie', 'timestamp': '2025-09-22 17:24:23', 'category': 'entertainment', 'sentiment': 0.78, 'keyword_mentioned': 'movie', 'message_length': 35}
+2025-09-22 17:24:28 | INFO | {'message': 'I just found Python! It was weird.', 'author': 'Eve', 'timestamp': '2025-09-22 17:24:28', 'category': 'tech', 'sentiment': 0.81, 'keyword_mentioned': 'Python', 'message_length': 34}
+2025-09-22 17:24:33 | INFO | {'message': 'I just saw a trick! It was exciting.', 'author': 'Alice', 'timestamp': '2025-09-22 17:24:33', 'category': 'other', 'sentiment': 0.25, 'keyword_mentioned': 'other', 'message_length': 36}
+2025-09-22 17:24:38 | INFO | {'message': 'I just loved a movie! It was funny.', 'author': 'Alice', 'timestamp': '2025-09-22 17:24:38', 'category': 'entertainment', 'sentiment': 0.01, 'keyword_mentioned': 'movie', 'message_length': 35}
+2025-09-22 17:24:40 | WARNING | Producer interrupted by user.
+2025-09-22 17:24:40 | INFO | Kafka producer closed.
+2025-09-22 17:24:40 | INFO | Producer shutting down.

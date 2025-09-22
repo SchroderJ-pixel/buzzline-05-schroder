@@ -1,5 +1,10 @@
 # buzzline-05-case
 
+**Course:** Streaming Data – Module 5  
+**Date:** September 22, 2025  
+**Author:** Justin Schroder  
+**GitHub:** [SchroderJ-pixel](https://github.com/SchroderJ-pixel) 
+
 Nearly every streaming analytics system stores processed data somewhere for further analysis, historical reference, or integration with BI tools.
 
 In this example project, we incorporate relational data stores. 
