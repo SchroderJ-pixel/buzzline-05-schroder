@@ -2,68 +2,59 @@
 utils_producer.py - common functions used by producers.
 
 Producers send messages to a Kafka topic.
+This version makes topic creation **idempotent** (never delete/recreate on startup),
+which avoids the "marked for deletion" error loop.
 """
 
 #####################################
-# Import Modules
+# Imports
 #####################################
 
-# Import packages from Python Standard Library
 import os
 import sys
 import time
 from typing import Callable, Optional, Any
 
-# Import external packages
 from dotenv import load_dotenv
 from kafka import KafkaProducer, errors
-from kafka.admin import (
-    KafkaAdminClient,
-    NewTopic,
-)
+from kafka.admin import KafkaAdminClient, NewTopic
 
-# Import functions from local modules
 from utils.utils_logger import logger
 
 
 #####################################
-# Default Configurations
+# Defaults
 #####################################
 
 DEFAULT_KAFKA_BROKER_ADDRESS = "localhost:9092"
 
+
 #####################################
-# Helper Functions
+# Helpers
 #####################################
 
-### Edited
-def get_kafka_broker_address():
-    # Prefer the same source your consumer uses
+def get_kafka_broker_address() -> str:
+    """
+    Resolve the Kafka broker address the same way as the consumer.
+    """
     try:
         import utils.utils_config as config
         broker_address = config.get_kafka_broker_address()
     except Exception:
-        import os
         broker_address = os.getenv("KAFKA_BROKER_ADDRESS", "127.0.0.1:9092")
     logger.info(f"Kafka broker address: {broker_address}")
     return broker_address
 
 
-
 #####################################
-# Kafka Readiness Check
+# Kafka readiness
 #####################################
 
-
-def check_kafka_service_is_ready():
+def check_kafka_service_is_ready() -> bool:
     """
     Check if Kafka is ready by connecting to the broker and fetching metadata.
-
-    Returns:
-        bool: True if Kafka is ready, False otherwise.
     """
     kafka_broker = get_kafka_broker_address()
-
     try:
         admin_client = KafkaAdminClient(bootstrap_servers=kafka_broker)
         cluster_info: dict = admin_client.describe_cluster()
@@ -75,17 +66,9 @@ def check_kafka_service_is_ready():
         return False
 
 
-#####################################
-# Kafka Producer and Topic Management
-#####################################
-
-
 def verify_services(strict: bool = False) -> bool:
     """
     Check Kafka readiness. If strict=False, do not exit when unavailable.
-
-    Returns:
-        bool: True if Kafka is ready, False otherwise.
     """
     ready = check_kafka_service_is_ready()
     if ready:
@@ -100,27 +83,21 @@ def verify_services(strict: bool = False) -> bool:
         return False
 
 
+#####################################
+# Producer construction
+#####################################
 
 def create_kafka_producer(
     value_serializer: Optional[Callable[[Any], bytes]] = None,
 ) -> Optional[KafkaProducer]:
     """
     Create and return a Kafka producer instance.
-
-    Args:
-        value_serializer (callable): A custom serializer for message values.
-                                     Defaults to UTF-8 string encoding.
-
-    Returns:
-        KafkaProducer: Configured Kafka producer instance.
     """
     kafka_broker = get_kafka_broker_address()
 
     if value_serializer is None:
-
         def default_value_serializer(x: str) -> bytes:
-            return x.encode("utf-8")  # Default to string serialization
-
+            return x.encode("utf-8")
         value_serializer = default_value_serializer
 
     try:
@@ -136,6 +113,10 @@ def create_kafka_producer(
         return None
 
 
+#####################################
+# Topic management (idempotent)
+#####################################
+
 def _topic_exists(admin: KafkaAdminClient, topic_name: str) -> bool:
     try:
         return topic_name in set(admin.list_topics())
@@ -144,30 +125,12 @@ def _topic_exists(admin: KafkaAdminClient, topic_name: str) -> bool:
         return False
 
 
-def _delete_topic_if_exists(admin: KafkaAdminClient, topic_name: str) -> None:
-    """Delete topic if present and wait briefly for deletion to complete."""
-    try:
-        if _topic_exists(admin, topic_name):
-            admin.delete_topics([topic_name])
-            logger.info(f"Requested deletion of topic '{topic_name}'.")
-            # Wait a short time for deletion to propagate
-            deadline = time.time() + 10
-            while time.time() < deadline:
-                if not _topic_exists(admin, topic_name):
-                    break
-                time.sleep(0.2)
-    except Exception as e:
-        logger.warning(f"Ignoring topic deletion issue for '{topic_name}': {e}")
-
-
-def create_kafka_topic(topic_name, group_id=None) -> None:
+def create_kafka_topic(topic_name: str, group_id: Optional[str] = None) -> None:
     """
-    Create a fresh Kafka topic with the given name.
-    If it already exists, delete and recreate it (simple reset; no retention tweaks).
-
-    Args:
-        topic_name (str): Name of the Kafka topic.
-        group_id (str|None): Unused (kept for signature compatibility).
+    Idempotent topic creation:
+      - If topic exists, log and return.
+      - If not, create it.
+    Avoids delete/recreate which triggers 'marked for deletion' races.
     """
     kafka_broker = get_kafka_broker_address()
     admin_client = None
@@ -176,16 +139,15 @@ def create_kafka_topic(topic_name, group_id=None) -> None:
         admin_client = KafkaAdminClient(bootstrap_servers=kafka_broker)
 
         if _topic_exists(admin_client, topic_name):
-            logger.info(f"Topic '{topic_name}' already exists. Recreating fresh...")
-            _delete_topic_if_exists(admin_client, topic_name)
+            logger.info(f"Kafka topic '{topic_name}' is ready (exists).")
+            return
 
         new_topic = NewTopic(name=topic_name, num_partitions=1, replication_factor=1)
         admin_client.create_topics([new_topic])
-        logger.info(f"Topic '{topic_name}' created successfully.")
-
+        logger.info(f"Kafka topic '{topic_name}' created successfully.")
     except Exception as e:
-        logger.error(f"Error managing topic '{topic_name}': {e}")
-        sys.exit(1)
+        logger.error(f"Error ensuring topic '{topic_name}': {e}")
+        # Do NOT exit here; let callers decide. This keeps the app resilient.
     finally:
         if admin_client is not None:
             try:
@@ -194,52 +156,42 @@ def create_kafka_topic(topic_name, group_id=None) -> None:
                 pass
 
 
-def clear_kafka_topic(topic_name: str, group_id: Optional[str] = None):
+def clear_kafka_topic(topic_name: str, group_id: Optional[str] = None) -> None:
     """
-    Clear all messages in a Kafka topic by deleting and recreating it.
-    This keeps the same function signature but uses a simpler, more reliable approach.
-
-    Args:
-        topic_name (str): Name of the Kafka topic.
-        group_id (str, optional): Consumer group ID (not used in this simplified version).
+    (Optional utility) Delete and recreate a topic on purpose.
+    Not used by default startup. Use only when you explicitly want to reset a topic.
     """
     kafka_broker = get_kafka_broker_address()
-    admin_client = KafkaAdminClient(bootstrap_servers=kafka_broker)
+    admin_client = None
 
     try:
+        admin_client = KafkaAdminClient(bootstrap_servers=kafka_broker)
         logger.info(f"Clearing topic '{topic_name}' by deleting and recreating it.")
 
-        # Delete the topic if it exists
-        if topic_name in admin_client.list_topics():
+        if _topic_exists(admin_client, topic_name):
             admin_client.delete_topics([topic_name])
-            logger.info(f"Deleted topic '{topic_name}'.")
-            time.sleep(2)  # allow Kafka time to finish deletion
+            logger.info(f"Requested delete for '{topic_name}'. Waiting for deletion...")
+            # Small wait loop for deletion to propagate
+            deadline = time.time() + 10
+            while time.time() < deadline and _topic_exists(admin_client, topic_name):
+                time.sleep(0.25)
 
-        # Recreate the topic
         new_topic = NewTopic(name=topic_name, num_partitions=1, replication_factor=1)
         admin_client.create_topics([new_topic])
         logger.info(f"Recreated topic '{topic_name}' successfully.")
-
     except Exception as e:
         logger.error(f"Error clearing topic '{topic_name}': {e}")
     finally:
-        admin_client.close()
+        if admin_client is not None:
+            try:
+                admin_client.close()
+            except Exception:
+                pass
 
 
-#####################################
-# Added is_topic_available
-#####################################
 def is_topic_available(topic: str, timeout_ms: int = 5000) -> bool:
     """
     Return True if `topic` exists on the Kafka cluster defined by KAFKA_BROKER_ADDRESS.
-    Uses KafkaAdminClient.list_topics().
-
-    Args:
-        topic: Topic name to check.
-        timeout_ms: Admin client request timeout (ms).
-
-    Returns:
-        bool: True if topic exists, False otherwise.
     """
     try:
         kafka_broker = get_kafka_broker_address()
@@ -269,15 +221,13 @@ def is_topic_available(topic: str, timeout_ms: int = 5000) -> bool:
 
 
 #####################################
-# Main Function for Testing
+# Main (manual test)
 #####################################
-
 
 def main():
     """
-    Main entry point.
+    Manual test entry point.
     """
-
     logger.info("Starting utils_producer.py script...")
     logger.info("Loading environment variables from .env file...")
     load_dotenv()
@@ -289,10 +239,6 @@ def main():
     logger.info("All services are ready. Proceed with producer setup.")
     create_kafka_topic("test_topic", "default_group")
 
-
-#####################################
-# Conditional Execution
-#####################################
 
 if __name__ == "__main__":
     main()

@@ -1,0 +1,20 @@
+2025-09-22 17:13:40 | INFO | Logging to file: logs/project_log_10300.log
+2025-09-22 17:13:40 | INFO | Log sanitization enabled, personal info removed
+2025-09-22 17:13:40 | INFO | Starting Producer to run continuously.
+2025-09-22 17:13:40 | INFO | Use Ctrl+C to stop.
+2025-09-22 17:13:40 | INFO | MESSAGE_INTERVAL_SECONDS: 5
+2025-09-22 17:13:40 | INFO | BUZZ_TOPIC: buzzline_v2_schroder
+2025-09-22 17:13:40 | INFO | KAFKA_BROKER_ADDRESS: 172.21.223.52:9092
+2025-09-22 17:13:40 | INFO | BASE_DATA_DIR: ~/OneDrive/Desktop/Masters/Streaming Data/Mod 5/buzzline-05-schroder/data
+2025-09-22 17:13:40 | INFO | LIVE_DATA_PATH: ~/OneDrive/Desktop/Masters/Streaming Data/Mod 5/buzzline-05-schroder/data/project_live.json
+2025-09-22 17:13:40 | INFO | BASE_DATA_DIR: ~/OneDrive/Desktop/Masters/Streaming Data/Mod 5/buzzline-05-schroder/data
+2025-09-22 17:13:40 | INFO | SQLITE_PATH: ~/OneDrive/Desktop/Masters/Streaming Data/Mod 5/buzzline-05-schroder/data/buzz.sqlite
+2025-09-22 17:13:40 | INFO | KAFKA_BROKER_ADDRESS: 172.21.223.52:9092
+2025-09-22 17:13:40 | INFO | Kafka broker address: 172.21.223.52:9092
+2025-09-22 17:13:40 | INFO | Kafka is ready. Brokers: {'throttle_time_ms': 0, 'brokers': [{'node_id': 0, 'host': 'localhost', 'port': 9092, 'rack': None}], 'cluster_id': 'lv5ErvvfRuyQMq3KKWuGJA', 'controller_id': 0}
+2025-09-22 17:13:40 | INFO | Kafka producer connected to 172.21.223.52:9092
+2025-09-22 17:13:40 | INFO | KAFKA_BROKER_ADDRESS: 172.21.223.52:9092
+2025-09-22 17:13:40 | INFO | Kafka broker address: 172.21.223.52:9092
+2025-09-22 17:13:40 | INFO | Topic 'buzzline_v2_schroder' already exists. Recreating fresh...
+2025-09-22 17:13:40 | INFO | Requested deletion of topic 'buzzline_v2_schroder'.
+2025-09-22 17:13:40 | ERROR | Error managing topic 'buzzline_v2_schroder': [Error 36] TopicAlreadyExistsError: Request 'CreateTopicsRequest_v3(create_topic_requests=[(topic='buzzline_v2_schroder', num_partitions=1, replication_factor=1, replica_assignment=[], configs=[])], timeout=30000, validate_only=False)' failed with response 'CreateTopicsResponse_v3(throttle_time_ms=0, topic_errors=[(topic='buzzline_v2_schroder', error_code=36, error_message="Topic 'buzzline_v2_schroder' is marked for deletion.")])'.
